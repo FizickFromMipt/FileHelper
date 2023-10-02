@@ -1,5 +1,6 @@
 package helper;
 
+import javax.sound.midi.Soundbank;
 import java.io.*;
 import java.net.*;
 import java.util.Date;
@@ -9,14 +10,18 @@ import java.util.Date;
  * Все методы статические
  */
 public class FileHelper {
-    private FileHelper(){}
+    private FileHelper() {
+    }
 
 
     /**
      * Метод для конвертации пути файла в URL
      * Принимает на вход путь до файлв
-     * @param  - путь до желаемого файла
+     *
+     * @param - путь до желаемого файла
+     *
      * @return - URL
+     *
      * @throws MalformedURLException
      */
     public static URL convertToURL(String path) throws MalformedURLException {
@@ -32,8 +37,11 @@ public class FileHelper {
     /**
      * Метод для конвертации пути файла в URL
      * Принимает на вход объект класса File
-     * @param  - объект класса File
+     *
+     * @param - объект класса File
+     *
      * @return - URL
+     *
      * @throws MalformedURLException
      */
     public static URL convertToURL(File file) throws MalformedURLException {
@@ -49,7 +57,9 @@ public class FileHelper {
      * Метод для создания файла
      * Файл создается в корне проекта - если указать только имя файла
      * При необходимсоти помещать файл по указанному пути нужно указывать полный отностительный путь для файла как аргумент метода
+     *
      * @param fileName - желаемое имя файла
+     *
      * @throws IOException
      */
     public static void createFile(String fileName) throws IOException {
@@ -70,11 +80,12 @@ public class FileHelper {
     /**
      * Метод для удаления файлов
      * При необходимсоти удалить файл не в корневой папке - указыать отностительный полный путьдо файла
+     *
      * @param fileName
      */
     public static void deleteFile(String fileName) {
         File file = new File(fileName);
-        if(file.delete()) {
+        if (file.delete()) {
             System.out.println("Файл успешно удален");
         } else {
             System.out.println("Файл удалить не удалось.\nПроверьте корректность введеного имени файла и пути до него.");
@@ -82,7 +93,24 @@ public class FileHelper {
     }
 
     /**
+     * Метод для удаления файлов
+     * При необходимсоти удалить файл не в корневой папке - указыать объект типа File
+     *
+     * @param file
+     */
+    public static void deleteFile(File file) throws IOException {
+        ProcessBuilder builder = new ProcessBuilder("gedit");
+        Process process = builder.start();
+        if (file.delete()) {
+            System.out.println("Файл успешно удален");
+        } else {
+            System.out.println("Файл удалить не удалось.\nПроверьте корректность введеного имени файла и пути до него либо заблокированность файла.");
+        }
+    }
+
+    /**
      * Метод для получения информации о файле
+     *
      * @param fileName - имя файла
      */
     public static void showInfoAboutFile(String fileName) {
@@ -102,17 +130,74 @@ public class FileHelper {
 
     /**
      * Метод для переименовывания или перемещения файла в другую деректорию
+     *
      * @param oldName - текущее имя файла
      * @param newName - желаемое имя файла
      */
-    public static void renameFile (String oldName, String newName) {
+    public static void renameFile(String oldName, String newName) {
         boolean isRenamed = new File(oldName).renameTo(new File(newName));
 
         if (isRenamed) {
-            System.out.println("Файл " + oldName + " успешно переименован в " + newName + "." );
+            System.out.println("Файл " + oldName + " успешно переименован в " + newName + ".");
         } else {
             System.out.println("Переименовать или переместить файл не удалось");
         }
     }
+
+    /**
+     * Метод для открытия файлов во внешних приложениях
+     * ВАЖНО
+     * Указывать расширение и полный путь до файла
+     *
+     * @param fileName
+     */
+    //todo - не работает - починить!
+    public static void openFile(String fileName) {
+        Runtime runtime = Runtime.getRuntime();
+        String startString = fileName;
+
+        if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
+            startString = "start " + fileName;
+        }
+
+        try {
+            runtime.exec(startString);
+//            runtime.exec(startString, null, new File(pathDir));
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+
+    /**
+     * Метод рекурсивного удаления директории
+     * Проверяет наличие файлов или папок внутри папки у удаляет их рекурсивно
+     *
+     * @param dirPath
+     */
+    public static void deleteDir(String dirPath) throws IOException {
+        //Удаляемая папка
+        File dir = new File(dirPath);
+
+        //Список удаляемых папок и файлов
+        String[] dirList = dir.list();
+        if (dirList == null) {
+            System.out.println("Директории не существует.");
+            return;
+        }
+
+        for (int i = 0; i < dirList.length; i++) {
+            File file = new File(dirList[i]);
+
+            //Рекурсивно пробегаемся по каталогу
+            if (file.isDirectory()) {
+                deleteDir(file.getPath());
+            }
+            deleteFile(file);
+        }
+        System.out.println("Директория успешно удалена.");
+
+    }
+
 
 }

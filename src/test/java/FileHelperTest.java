@@ -69,5 +69,30 @@ public class FileHelperTest {
         });
     }
 
+//    @Test
+//    @DisplayName("Проверка открытия файла во внешнем приложении")
+//    public void openFileTest() throws IOException {
+//        FileHelper.createFile("src/test/java/test.html");
+//    }
+    @Test
+    @DisplayName("Проверка открытия файла во внешнем приложении")
+    public void openFileTest() throws IOException {
+        Assertions.assertDoesNotThrow( () -> {
+            FileHelper.openFile("\"src/test/java/test.html\"");
+        });
+    }
+
+    @Test
+    @DisplayName("Проверка удаления директории")
+    public void deleteDirTest() throws IOException {
+        Assertions.assertDoesNotThrow( () -> {
+            FileHelper.deleteDir("src/test/test");
+        });
+    }
+
+
+
+
+
 
 }
