@@ -78,7 +78,7 @@ public class FileHelperTest {
     @DisplayName("Проверка открытия файла во внешнем приложении")
     public void openFileTest() throws IOException {
         Assertions.assertDoesNotThrow( () -> {
-            FileHelper.openFile("\"src/test/java/test.html\"");
+            FileHelper.openFile("notepad", "\"src/test/java/test.html\"");
         });
     }
 
@@ -89,10 +89,5 @@ public class FileHelperTest {
             FileHelper.deleteDir("src/test/test");
         });
     }
-
-
-
-
-
 
 }

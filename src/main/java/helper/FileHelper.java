@@ -83,13 +83,8 @@ public class FileHelper {
      *
      * @param fileName
      */
-    public static void deleteFile(String fileName) {
-        File file = new File(fileName);
-        if (file.delete()) {
-            System.out.println("Файл успешно удален");
-        } else {
-            System.out.println("Файл удалить не удалось.\nПроверьте корректность введеного имени файла и пути до него.");
-        }
+    public static void deleteFile(String fileName) throws IOException {
+        deleteFile(new File(fileName));
     }
 
     /**
@@ -99,13 +94,14 @@ public class FileHelper {
      * @param file
      */
     public static void deleteFile(File file) throws IOException {
-        ProcessBuilder builder = new ProcessBuilder("gedit");
-        Process process = builder.start();
+        ProcessBuilder processBuilder = new ProcessBuilder("powershell");
+        Process process = processBuilder.start();
         if (file.delete()) {
             System.out.println("Файл успешно удален");
         } else {
             System.out.println("Файл удалить не удалось.\nПроверьте корректность введеного имени файла и пути до него либо заблокированность файла.");
         }
+        process.destroy();
     }
 
     /**
@@ -152,20 +148,9 @@ public class FileHelper {
      * @param fileName
      */
     //todo - не работает - починить!
-    public static void openFile(String fileName) {
-        Runtime runtime = Runtime.getRuntime();
-        String startString = fileName;
-
-        if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
-            startString = "start " + fileName;
-        }
-
-        try {
-            runtime.exec(startString);
-//            runtime.exec(startString, null, new File(pathDir));
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
+    public static void openFile(String programName, String fileName) throws IOException {
+        ProcessBuilder builder = new ProcessBuilder(programName, fileName);
+        builder.start();
     }
 
 
@@ -188,14 +173,18 @@ public class FileHelper {
 
         for (int i = 0; i < dirList.length; i++) {
             File file = new File(dirList[i]);
-
             //Рекурсивно пробегаемся по каталогу
             if (file.isDirectory()) {
                 deleteDir(file.getPath());
+                continue;
             }
             deleteFile(file);
         }
-        System.out.println("Директория успешно удалена.");
+        if (dir.list() == null) {
+            System.out.println("Директория успешно удалена.");
+        } else {
+            System.out.println("Директорию удалить не удалось.");
+        }
 
     }
 
