@@ -1,6 +1,5 @@
 package helper;
 
-import javax.sound.midi.Soundbank;
 import java.io.*;
 import java.net.*;
 import java.util.Date;
@@ -93,15 +92,12 @@ public class FileHelper {
      *
      * @param file
      */
-    public static void deleteFile(File file) throws IOException {
-        ProcessBuilder processBuilder = new ProcessBuilder("powershell");
-        Process process = processBuilder.start();
+    public static void deleteFile(File file) {
         if (file.delete()) {
-            System.out.println("Файл успешно удален");
+            System.out.println("Файл " + file.getName() + " успешно удален");
         } else {
-            System.out.println("Файл удалить не удалось.\nПроверьте корректность введеного имени файла и пути до него либо заблокированность файла.");
+            System.out.println("Файл " + file.getName() + " удалить не удалось.\nПроверьте корректность введеного имени файла и пути до него либо заблокированность файла.");
         }
-        process.destroy();
     }
 
     /**
@@ -163,14 +159,12 @@ public class FileHelper {
     public static void deleteDir(String dirPath) throws IOException {
         //Удаляемая папка
         File dir = new File(dirPath);
-
         //Список удаляемых папок и файлов
         String[] dirList = dir.list();
         if (dirList == null) {
             System.out.println("Директории не существует.");
             return;
         }
-
         for (int i = 0; i < dirList.length; i++) {
             File file = new File(dirList[i]);
             //Рекурсивно пробегаемся по каталогу

@@ -69,11 +69,6 @@ public class FileHelperTest {
         });
     }
 
-//    @Test
-//    @DisplayName("Проверка открытия файла во внешнем приложении")
-//    public void openFileTest() throws IOException {
-//        FileHelper.createFile("src/test/java/test.html");
-//    }
     @Test
     @DisplayName("Проверка открытия файла во внешнем приложении")
     public void openFileTest() throws IOException {
